@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://docvault-backend-ow2g.onrender.com/",
 });
 
 // Attach token to all requests
