@@ -1,54 +1,25 @@
-// // src/api/API.js
-// import axios from "axios";
-
-// const API = axios.create({
-//   baseURL: process.env.REACT_APP_API_URL,
-// });
-
-// // Attach token to all requests
-// API.interceptors.request.use((req) => {
-//   const token = localStorage.getItem("token");
-//   if (token) {
-//     req.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return req;
-// });
-
-// // ================= Notification APIs =================
-
-// // Get all notifications for the logged-in user
-// export const getNotifications = () => API.get("/api/notifications");
-
-// // Mark a notification as read
-// export const markAsRead = (notificationId) =>
-//   API.put(`/api/notifications/${notificationId}/read`);
-
-// export default API;
-// src/api/API.js
 import axios from "axios";
 
+// ✅ Use the previously working backend route
 const API = axios.create({
-  baseURL: "https://docvault-backend-ow2g.onrender.com/api", // full API
+  baseURL: "https://docvault-backend-ow2g.onrender.com/api/simple-auth",
 });
 
 // Attach token to all requests
 API.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");
-  if (token) req.headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`;
+  }
   return req;
 });
 
-// Auth
-export const loginUser = (email, password) => API.post("/auth/login", { email, password });
-export const registerUser = (data) => API.post("/auth/register", data);
+// Login function
+export const loginUser = (email, password) =>
+  API.post("/login", { email, password });
 
-// Categories
-export const getCategories = () => API.get("/categories");
-
-// Documents
-export const getDocuments = () => API.get("/documents");
-
-// Users (admin)
-export const getUsers = () => API.get("/users");
+// Register function (if needed)
+export const registerUser = (name, email, password, role) =>
+  API.post("/register", { name, email, password, role });
 
 export default API;

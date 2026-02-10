@@ -1,13 +1,13 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/API";
+import { loginUser } from "../api/API"; // use the working API login
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // start as true
+  const [loading, setLoading] = useState(true);
 
   // Load user from localStorage on mount
   useEffect(() => {
@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const res = await API.post("/auth/login", { email, password });
+      const res = await loginUser(email, password); // call working API
       const userData = res.data.user;
       const token = res.data.token;
 
@@ -31,10 +31,10 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
 
       setLoading(false);
-      navigate("/dashboard"); // navigate after state is set
+      navigate("/dashboard");
     } catch (err) {
       setLoading(false);
-      throw err; // let Login.jsx handle the error
+      throw err; // let your Login.jsx handle errors
     }
   };
 
