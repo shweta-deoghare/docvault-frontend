@@ -1,35 +1,49 @@
 // src/pages/Login.jsx
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { loginUser } from "../api/API";
 
 const Login = () => {
-  const { login, loading } = useAuth(); // use login from context
+  const navigate = useNavigate(); // ✅ for redirect
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     if (!email || !password) {
       setError("Enter both email and password");
+      setLoading(false);
       return;
     }
 
     try {
-      await login(email, password);
-      // ✅ AuthContext handles storing token & redirect to dashboard
+      const response = await loginUser(email, password);
+      const { token, user } = response.data;
+
+      // Save token & user for future requests
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      setLoading(false);
+
+      // ✅ Redirect to dashboard
+      navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-blue-200 px-4">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleLogin}
         className="w-full max-w-md bg-white rounded-xl shadow-lg p-8 flex flex-col gap-4"
       >
         <h2 className="text-2xl font-bold text-center text-indigo-700">
