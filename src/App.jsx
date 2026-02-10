@@ -1,4 +1,3 @@
-// src/App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
@@ -13,7 +12,10 @@ import AdminUserDetails from "./pages/AdminUserDetails";
 import DocumentHistory from "./pages/DocumentHistory";
 
 function ProtectedRoute({ children }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
+
   return user ? children : <Navigate to="/" />;
 }
 
@@ -46,12 +48,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route 
-        path="/admin/user-details"
-         element={
-         <AdminUserDetails/>
-         }
-         />
         <Route
           path="/master"
           element={
@@ -60,11 +56,25 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/assign/:documentId"
+          element={
+            <ProtectedRoute>
+              <AssignDocument />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/assigned-documents"
+          element={
+            <ProtectedRoute>
+              <AssignedDocuments />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/admin/user-details" element={<AdminUserDetails />} />
         <Route path="/documents/history/:id" element={<DocumentHistory />} />
-    <Route path="/assign/:documentId" element={<AssignDocument />} />
-        <Route path="/assigned-documents" element={<AssignedDocuments />} />
       </Routes>
-
     </AuthProvider>
   );
 }

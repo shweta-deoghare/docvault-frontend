@@ -1,4 +1,3 @@
-// src/context/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api/API";
@@ -7,19 +6,17 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // start as true
 
-  // Make sure token persists on page refresh
+  // Load user from localStorage on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
-    if (token && savedUser && !user) {
+    if (token && savedUser) {
       setUser(JSON.parse(savedUser));
     }
+    setLoading(false);
   }, []);
 
   const login = async (email, password) => {
@@ -29,16 +26,15 @@ export const AuthProvider = ({ children }) => {
       const userData = res.data.user;
       const token = res.data.token;
 
-      // Save user & token in localStorage
       localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("token", token);
-
       setUser(userData);
+
       setLoading(false);
-      navigate("/dashboard");
+      navigate("/dashboard"); // navigate after state is set
     } catch (err) {
       setLoading(false);
-      alert(err.response?.data?.message || "Login failed");
+      throw err; // let Login.jsx handle the error
     }
   };
 
