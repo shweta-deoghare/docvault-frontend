@@ -1,3 +1,4 @@
+// src/App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
@@ -11,6 +12,7 @@ import AssignedDocuments from "./pages/AssignedDocuments";
 import AdminUserDetails from "./pages/AdminUserDetails";
 import DocumentHistory from "./pages/DocumentHistory";
 
+// ProtectedRoute ensures only logged-in users can access pages
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
 
@@ -23,7 +25,10 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
+        {/* Public */}
         <Route path="/" element={<Login />} />
+
+        {/* Protected */}
         <Route
           path="/dashboard"
           element={
@@ -72,6 +77,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* Admin & History routes */}
         <Route path="/admin/user-details" element={<AdminUserDetails />} />
         <Route path="/documents/history/:id" element={<DocumentHistory />} />
       </Routes>
