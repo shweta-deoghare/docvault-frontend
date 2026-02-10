@@ -19,11 +19,10 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  // ✅ Updated login to use API.loginUser
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const res = await API.loginUser(email, password); // Use our API helper
+      const res = await API.post("/auth/login", { email, password });
       const userData = res.data.user;
       const token = res.data.token;
 
