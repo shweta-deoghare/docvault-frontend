@@ -40,7 +40,15 @@ const Upload = () => {
 
     try {
       setLoading(true);
-      await API.post("/documents/upload", formData);
+      await API.post(
+  "https://docvault-backend-ow2g.onrender.com/api/documents/upload",
+  formData,
+  {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  }
+);
       alert("Document uploaded successfully");
       setFile(null);
     } catch (err) {
